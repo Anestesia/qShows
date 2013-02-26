@@ -19,14 +19,8 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
         <item>
          <widget class="QPushButton" name="pushButton">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
           <property name="text">
            <string>Search</string>
           </property>
@@ -63,18 +57,10 @@
          </widget>
         </item>
         <item>
-         <widget class="QGraphicsView" name="graphicsView">
-          <property name="interactive">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <widget class="QGraphicsView" name="graphicsView"/>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_5">
-          <property name="text">
-           <string>Send</string>
-          </property>
-         </widget>
+         <widget class="QTableWidget" name="tableWidget_3"/>
         </item>
         <item>
          <widget class="QTableWidget" name="tableWidget_2"/>

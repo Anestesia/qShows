@@ -15,8 +15,6 @@
 #include "QFileDialog"
 #include "QCryptographicHash"
 #include "md5.h"
-#include "QByteArray"
-#include "QCheckBox"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     firstPic = true;
     isLogged=false;
     firstPush = true;
-
     /*QNetworkProxy proxy;
      proxy.setType(QNetworkProxy::HttpProxy);
      proxy.setHostName("172.16.110.60");
@@ -35,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
      proxy.setPassword("1234567");
      QNetworkProxy::setApplicationProxy(proxy);*/
     ui->centralWidget->setWindowTitle(QString::fromUtf8("Serial detective"));
-
+    ui->statusBar->showMessage(APP_REVISION);
+    ui->statusBar->show();
 }
 
 MainWindow::~MainWindow()
@@ -189,6 +187,35 @@ void MainWindow::onFileResult(QNetworkReply* reply)
 
 void MainWindow::on_tableWidget_cellClicked(int row, int column)
 {
+    ui->tableWidget_3->setColumnCount(1);
+    ui->tableWidget_3->setRowCount(10);
+    ui->tableWidget_3->setHorizontalHeaderItem(0,new QTableWidgetItem(titles[row].uktitle));
+    ui->tableWidget_3->setVerticalHeaderItem(0,new QTableWidgetItem(QString::fromUtf8("Air dates:")));
+    ui->tableWidget_3->setVerticalHeaderItem(1,new QTableWidgetItem(QString::fromUtf8("Country:")));
+    ui->tableWidget_3->setVerticalHeaderItem(2,new QTableWidgetItem(QString::fromUtf8("Genres:")));
+    ui->tableWidget_3->setVerticalHeaderItem(3,new QTableWidgetItem(QString::fromUtf8("Network:")));
+    ui->tableWidget_3->setVerticalHeaderItem(4,new QTableWidgetItem(QString::fromUtf8("Watching:")));
+    ui->tableWidget_3->setVerticalHeaderItem(5,new QTableWidgetItem(QString::fromUtf8("Total runtime:")));
+    ui->tableWidget_3->setVerticalHeaderItem(6,new QTableWidgetItem(QString::fromUtf8("IMDB rating:")));
+    ui->tableWidget_3->setVerticalHeaderItem(7,new QTableWidgetItem(QString::fromUtf8("Kinopoisk rating:")));
+    ui->tableWidget_3->setVerticalHeaderItem(8,new QTableWidgetItem(QString::fromUtf8("MyShows rating:")));
+    ui->tableWidget_3->setVerticalHeaderItem(9,new QTableWidgetItem(QString::fromUtf8("")));
+    ui->tableWidget_3->setColumnWidth(0,300);
+
+    ui->tableWidget_3->setItem(0,0,new QTableWidgetItem(QString::number(titles[row].year)));
+    ui->tableWidget_3->setItem(1,0,new QTableWidgetItem(titles[row].country));
+    ui->tableWidget_3->setItem(2,0,new QTableWidgetItem(titles[row].genres));
+    ui->tableWidget_3->setItem(3,0,new QTableWidgetItem(titles[row].voted));
+    ui->tableWidget_3->setItem(4,0,new QTableWidgetItem(titles[row].watching));
+    ui->tableWidget_3->setItem(5,0,new QTableWidgetItem(titles[row].runtime));
+    ui->tableWidget_3->setItem(6,0,new QTableWidgetItem(titles[row].imdbid));
+    ui->tableWidget_3->setItem(7,0,new QTableWidgetItem(titles[row].kinopoiskid));
+    ui->tableWidget_3->setItem(8,0,new QTableWidgetItem(titles[row].rating));
+    ui->tableWidget_3->setItem(9,0,new QTableWidgetItem(titles[row].tvrageid));
+
+
+
+
 
     if (titles[row].image!="")
     {
@@ -199,7 +226,9 @@ void MainWindow::on_tableWidget_cellClicked(int row, int column)
     {
         connect(m_pImgCtrl,SIGNAL(downloaded()),SLOT(loadImage()));
     }
+
     firstPic=false;
+
 }
 
 void MainWindow::loadImage()
@@ -244,76 +273,6 @@ void MainWindow::on_pushButton_3_clicked()
 {
     doLogin(ui->lineEdit_2->text(),ui->lineEdit_3->text());
 }
-void MainWindow::on_pushButton_5_clicked()
-{
-        /*url.setUrl("http://api.myshows.ru/profile/episodes/unwatched/");
-        QNetworkRequest request(url);
-        connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(PostSeries(QNetworkReply*)));
-        request.setUrl(url);*/
-        //bytes = "method=getQuote&format=xml";
-        //reply = networkManager.post(request, bytes);
-   disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(GetSeries(QNetworkReply*)));
-    PostSeries();
-
-}
-
-
-void MainWindow::PostSeries()
-{
-    urls.clear();
-
-
-    series_for_delete.clear();
-
-    for (int i=0;i<series.size();i++)
-    {
-        QCheckBox *cBox = (QCheckBox*)ui->tableWidget_2->cellWidget(i,4);
-        if (cBox->isChecked())
-        {
-            series_for_delete.append(series[i]);
-            series.remove(i,1);
-        }
-
-        if(!cBox->isChecked())
-            series_for_add.append(series[i]);
-
-
-    }
-
-    series.clear();
-
-    for (int i = 0; i<series_for_add.size(); i++)
-    {
-        series.append(series_for_add[i]);
-    }
-     qDebug()<<"series_for_add"<<series_for_add.size();
-
-
-    for (int i = 0; i <series_for_delete.size(); i++)
-    {
-        QString uri="http://api.myshows.ru/profile/episodes/check/"+QString::number(series_for_delete[i].episodeId);
-        QUrl urlu;
-        urlu.setUrl(uri);
-        urls.append(urlu);
-    }
-
-    QListIterator<QUrl> it(urls);
-int u = 0;
-
-    while (it.hasNext())
-    {
-        u++;
-        request.setUrl(it.next());
-        reply = networkManager.get(request);
-        qDebug()<<u;
-       // it.next();
-    }
-  renewEpTable();
-    qDebug()<<"series_count"<<series.count();
-    //url.addQueryItem();
-
-
-}
 
 void MainWindow::on_pushButton_4_clicked()
 {
@@ -326,12 +285,11 @@ void MainWindow::on_pushButton_4_clicked()
     }
     ui->tableWidget_2->clear();
     ui->tableWidget_2->setRowCount(0);
-    ui->tableWidget_2->setColumnCount(5);
+    ui->tableWidget_2->setColumnCount(4);
     ui->tableWidget_2->setHorizontalHeaderItem(0,new QTableWidgetItem(QString::fromUtf8("Title")));
     ui->tableWidget_2->setHorizontalHeaderItem(1,new QTableWidgetItem(QString::fromUtf8("Serial")));
     ui->tableWidget_2->setHorizontalHeaderItem(2,new QTableWidgetItem(QString::fromUtf8("Air Date")));
     ui->tableWidget_2->setHorizontalHeaderItem(3,new QTableWidgetItem(QString::fromUtf8("Season")));
-    ui->tableWidget_2->setHorizontalHeaderItem(4,new QTableWidgetItem(QString::fromUtf8("number_fig_s_nim")));
 }
 
 void MainWindow::GetSeries(QNetworkReply* reply)
@@ -374,11 +332,6 @@ void MainWindow::renewEpTable()
         label->setProperty("row",i);
         label->setProperty("column",1);
 
-        if (i<8) qWarning()<<"lab " << series[i].title;
-
-        QCheckBox *checkBox = new QCheckBox(this);
-
-
         QString text(QString::fromUtf8("<a href=\"http://myshows.ru/view/"));
         text.append(QString::number(series[i].showId));
         text.append(QString::fromUtf8("/\">myshows.ru<\\a>"));
@@ -390,6 +343,5 @@ void MainWindow::renewEpTable()
         ui->tableWidget_2->setCellWidget(i,1,label);
         ui->tableWidget_2->setItem(i,2,new QTableWidgetItem(series[i].airDate));
         ui->tableWidget_2->setItem(i,3,new QTableWidgetItem(QString::number(series[i].seasonNumber)));
-        ui->tableWidget_2->setCellWidget(i,4,checkBox);
     }
 }

@@ -27,4 +27,6 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+REVISION = $$system(git rev-parse HEAD)
 
+DEFINES += APP_REVISION=\\\"$$REVISION\\\"
