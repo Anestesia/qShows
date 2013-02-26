@@ -15,16 +15,16 @@ SOURCES += main.cpp\
         title.cpp \
         qxtjson.cpp \
     filedownloader.cpp \
-        md5.cpp
+        md5.cpp \
+    serie.cpp
 
 HEADERS  += mainwindow.h \
             title.h \
             qxtjson.h \
     filedownloader.h \
-            md5.h
+            md5.h \
+    serie.h
 
 FORMS    += mainwindow.ui
 
-REVISION = $$system(git rev-parse HEAD)
 
-DEFINES += APP_REVISION=\\\"$$REVISION\\\"

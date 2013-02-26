@@ -6,6 +6,7 @@
 #include "QLabel"
 #include "qxtjson.h"
 #include "title.h"
+#include "serie.h"
 #include "QNetworkProxy"
 #include "QtAlgorithms"
 #include "QGraphicsScene"
@@ -14,6 +15,8 @@
 #include "QFileDialog"
 #include "QCryptographicHash"
 #include "md5.h"
+#include "QByteArray"
+#include "QCheckBox"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,7 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     firstPic = true;
+    isLogged=false;
     firstPush = true;
+
     /*QNetworkProxy proxy;
      proxy.setType(QNetworkProxy::HttpProxy);
      proxy.setHostName("172.16.110.60");
@@ -30,8 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
      proxy.setPassword("1234567");
      QNetworkProxy::setApplicationProxy(proxy);*/
     ui->centralWidget->setWindowTitle(QString::fromUtf8("Serial detective"));
-    ui->statusBar->showMessage(APP_REVISION);
-    ui->statusBar->show();
+
 }
 
 MainWindow::~MainWindow()
@@ -44,9 +48,10 @@ void MainWindow::on_pushButton_clicked()
     GetSerialsByName();
 }
 
-void MainWindow::login(QString login, QString pass)
+void MainWindow::doLogin(QString Login, QString Pass)
 {
-    QString hash = MD5(pass);
+    login = Login;
+    hash = MD5(Pass);
     url.setUrl("http://api.myshows.ru/profile/login?login="+login+"&password="+hash);
     request.setUrl(url);
     reply = networkManager.get(request);
@@ -59,9 +64,15 @@ void MainWindow::login(QString login, QString pass)
 
 void MainWindow::onLoginResult(QNetworkReply *reply)
 {
-    QByteArray bytes = reply->readAll();
     int v = (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute)).toInt();
-    qDebug()<<v;
+    if (v==200)
+    {
+        isLogged = true;
+        QMessageBox mBox;
+        mBox.setText("Success!");
+        mBox.exec();
+    }
+    disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onLoginResult(QNetworkReply*)));
 }
 
 void MainWindow::GetSerialsByName()
@@ -139,6 +150,7 @@ void MainWindow::onResult(QNetworkReply* reply)
         tit.status = map2["status"].toString();
         this->titles.append(tit);
     }
+    disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResult(QNetworkReply*)));
     renewTable();
 }
 
@@ -171,6 +183,7 @@ void MainWindow::onFileResult(QNetworkReply* reply)
         tit.image = map2["image"].toString();
         this->titles.append(tit);
     }
+    disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFileResult(QNetworkReply*)));
     renewTable();
 }
 
@@ -210,7 +223,7 @@ void MainWindow::GetSerialsByFile()
     firstPush=false;
     QFileInfo fi(fileName);
     QString base = fi.fileName();
-    url.setUrl("http://api.myshows.ru/shows/search/file/?q="+fi.fileName());
+    url.setUrl("http://api.myshows.ru/shows/search/file/?q="+base);
     request.setUrl(url);
     reply = networkManager.get(request);
     ui->tableWidget->clear();
@@ -229,5 +242,154 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    login(ui->lineEdit_2->text(),ui->lineEdit_3->text());
+    doLogin(ui->lineEdit_2->text(),ui->lineEdit_3->text());
+}
+void MainWindow::on_pushButton_5_clicked()
+{
+        /*url.setUrl("http://api.myshows.ru/profile/episodes/unwatched/");
+        QNetworkRequest request(url);
+        connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(PostSeries(QNetworkReply*)));
+        request.setUrl(url);*/
+        //bytes = "method=getQuote&format=xml";
+        //reply = networkManager.post(request, bytes);
+   disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(GetSeries(QNetworkReply*)));
+    PostSeries();
+
+}
+
+
+void MainWindow::PostSeries()
+{
+    urls.clear();
+
+
+    series_for_delete.clear();
+
+    for (int i=0;i<series.size();i++)
+    {
+        QCheckBox *cBox = (QCheckBox*)ui->tableWidget_2->cellWidget(i,4);
+        if (cBox->isChecked())
+        {
+            series_for_delete.append(series[i]);
+            series.remove(i,1);
+        }
+
+        if(!cBox->isChecked())
+            series_for_add.append(series[i]);
+
+
+    }
+
+    series.clear();
+
+    for (int i = 0; i<series_for_add.size(); i++)
+    {
+        series.append(series_for_add[i]);
+    }
+     qDebug()<<"series_for_add"<<series_for_add.size();
+
+
+    for (int i = 0; i <series_for_delete.size(); i++)
+    {
+        QString uri="http://api.myshows.ru/profile/episodes/check/"+QString::number(series_for_delete[i].episodeId);
+        QUrl urlu;
+        urlu.setUrl(uri);
+        urls.append(urlu);
+    }
+
+    QListIterator<QUrl> it(urls);
+int u = 0;
+
+    while (it.hasNext())
+    {
+        u++;
+        request.setUrl(it.next());
+        reply = networkManager.get(request);
+        qDebug()<<u;
+       // it.next();
+    }
+  renewEpTable();
+    qDebug()<<"series_count"<<series.count();
+    //url.addQueryItem();
+
+
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    if (isLogged)
+    {
+        url.setUrl("http://api.myshows.ru/profile/episodes/unwatched/");
+        connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(GetSeries(QNetworkReply*)));
+        request.setUrl(url);
+        reply = networkManager.get(request);
+    }
+    ui->tableWidget_2->clear();
+    ui->tableWidget_2->setRowCount(0);
+    ui->tableWidget_2->setColumnCount(5);
+    ui->tableWidget_2->setHorizontalHeaderItem(0,new QTableWidgetItem(QString::fromUtf8("Title")));
+    ui->tableWidget_2->setHorizontalHeaderItem(1,new QTableWidgetItem(QString::fromUtf8("Serial")));
+    ui->tableWidget_2->setHorizontalHeaderItem(2,new QTableWidgetItem(QString::fromUtf8("Air Date")));
+    ui->tableWidget_2->setHorizontalHeaderItem(3,new QTableWidgetItem(QString::fromUtf8("Season")));
+    ui->tableWidget_2->setHorizontalHeaderItem(4,new QTableWidgetItem(QString::fromUtf8("number_fig_s_nim")));
+}
+
+void MainWindow::GetSeries(QNetworkReply* reply)
+{
+    const QByteArray rawdata = reply->readAll();
+
+    QxtJSON parser = QxtJSON();
+
+    QVariantMap map = parser.parse(QString::fromUtf8(rawdata.data())).toMap();
+    QMapIterator<QString, QVariant> it(map);
+    while (!series.empty())
+    {
+        series.remove(0);
+    }
+    while (it.hasNext())
+    {
+        it.next();
+        serie ep;
+        ep.episodeId = it.key().toInt();
+        QVariantMap map2 = it.value().toMap();
+        ep.airDate = map2["airDate"].toString();
+        ep.episodeNumber = map2["episodeNumber"].toInt();
+        ep.seasonNumber = map2["seasonNumber"].toInt();
+        ep.showId = map2["showId"].toInt();
+        ep.title = map2["title"].toString();
+        this->series.append(ep);
+    }
+    renewEpTable();
+}
+
+void MainWindow::renewEpTable()
+{
+    ui->tableWidget_2->setRowCount(0);
+    for (int i=0;i<series.size();i++)
+    {
+        QLabel *label = new QLabel(this);
+        label->setOpenExternalLinks(true);
+        label->setTextFormat(Qt::RichText);
+        label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        label->setProperty("row",i);
+        label->setProperty("column",1);
+
+        if (i<8) qWarning()<<"lab " << series[i].title;
+
+        QCheckBox *checkBox = new QCheckBox(this);
+
+
+        QString text(QString::fromUtf8("<a href=\"http://myshows.ru/view/"));
+        text.append(QString::number(series[i].showId));
+        text.append(QString::fromUtf8("/\">myshows.ru<\\a>"));
+
+        label->setText(text);
+
+        ui->tableWidget_2->setRowCount(ui->tableWidget_2->rowCount()+1);
+        ui->tableWidget_2->setItem(i,0,new QTableWidgetItem(series[i].title));
+        ui->tableWidget_2->setCellWidget(i,1,label);
+        ui->tableWidget_2->setItem(i,2,new QTableWidgetItem(series[i].airDate));
+        ui->tableWidget_2->setItem(i,3,new QTableWidgetItem(QString::number(series[i].seasonNumber)));
+        ui->tableWidget_2->setCellWidget(i,4,checkBox);
+    }
 }
