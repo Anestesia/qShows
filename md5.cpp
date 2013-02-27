@@ -1,4 +1,4 @@
-#include "MD5.H"
+#include "md5.h"
 
 BYTE  m_lpszBuffer[64];
 ULONG m_nCount[2];
