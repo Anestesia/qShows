@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-<<<<<<< HEAD
-=======
 #include "QString"
 #include "QUrl"
 #include "QDebug"
@@ -17,7 +15,7 @@
 #include "QFileDialog"
 #include "QCryptographicHash"
 #include "md5.h"
->>>>>>> newAPI
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,8 +44,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-<<<<<<< HEAD
-=======
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -353,4 +349,3 @@ void MainWindow::renewEpTable()
         ui->tableWidget_2->setItem(i,3,new QTableWidgetItem(QString::number(series[i].seasonNumber)));
     }
 }
->>>>>>> newAPI

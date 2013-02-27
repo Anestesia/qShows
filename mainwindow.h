@@ -2,8 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-<<<<<<< HEAD
-=======
 #include "QtNetwork/QNetworkReply"
 #include "QScriptEngine"
 #include "QScriptValue"
@@ -11,7 +9,6 @@
 #include <title.h>
 #include "serie.h"
 #include "filedownloader.h"
->>>>>>> newAPI
 
 namespace Ui {
 class MainWindow;
@@ -20,13 +17,12 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
-<<<<<<< HEAD
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
-=======
+
 public slots:
     void onResult(QNetworkReply*);
     void onFileResult(QNetworkReply*);
@@ -68,7 +64,6 @@ private slots:
 
     void on_pushButton_4_clicked();
 
->>>>>>> newAPI
 private:
     Ui::MainWindow *ui;
 };
