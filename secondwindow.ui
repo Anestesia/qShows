@@ -7,40 +7,61 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>403</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="3" column="0">
     <widget class="QCheckBox" name="checkBox">
      <property name="text">
-      <string>CheckBox</string>
+      <string>Update</string>
      </property>
     </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEdit_4"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QSpinBox" name="spinBox">
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLineEdit" name="lineEdit_5"/>
    </item>
    <item row="4" column="0">
-    <widget class="QLineEdit" name="lineEdit_6"/>
+    <widget class="QLineEdit" name="lineEdit_4">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item row="5" column="0">
+    <widget class="QLineEdit" name="lineEdit_5">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLineEdit" name="lineEdit_6">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
     <widget class="QPushButton" name="pushButton">
      <property name="text">
-      <string>OK</string>
+      <string>Apply</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLineEdit" name="lineEdit_2"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLineEdit" name="lineEdit_3"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Login</string>
      </property>
     </widget>
    </item>
