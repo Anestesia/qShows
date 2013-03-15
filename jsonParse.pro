@@ -4,8 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network script
-QT += sql
+QT       += core widgets network sql
 
 TARGET = jsonParse
 TEMPLATE = app

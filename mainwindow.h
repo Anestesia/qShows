@@ -3,9 +3,6 @@
 
 #include <QMainWindow>
 #include "QtNetwork/QNetworkReply"
-#include "QScriptEngine"
-#include "QScriptValue"
-#include "QScriptValueIterator"
 #include <title.h>
 #include "serie.h"
 #include "filedownloader.h"

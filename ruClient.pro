@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core widgets sql
 
 TARGET = ruClient
 TEMPLATE = app

@@ -8,7 +8,7 @@
 #include "qxtjson.h"
 #include "title.h"
 #include "serie.h"
-#include "QNetworkProxy"
+#include "QtNetwork/QNetworkProxy"
 #include "QtAlgorithms"
 #include "QGraphicsScene"
 #include "QMessageBox"
