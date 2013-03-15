@@ -1,6 +1,5 @@
 *Description:*
-Simple but useful(in future) client for [bittorent forum](http://www.rutracker.org)
-
+Useful client for [myshows.ru](http://www.myshows.ru). Can help you check watched episodes or search new titles without browser. Now with banana flavour!
 *Features:*
 
 *Known bugs:*
