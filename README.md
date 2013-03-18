@@ -12,6 +12,11 @@ Useful client for [myshows.ru](http://www.myshows.ru). Can help you check watche
 
 *Version history:*
 0.4 — Added Settings for proxy & Search by File
+
 0.3 — Added detail view
+
 0.2 — Added authorization
+
+0.1 — Working search and title art fetching
+
 0.01a — Initial release
