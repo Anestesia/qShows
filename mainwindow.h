@@ -66,9 +66,9 @@ private slots:
 
     void on_lineEdit_textEdited(const QString &arg1);
 
-    void on_pushButton_5_clicked();
+    void on_lineEdit_lostFocus();
 
-    //void on_lineEdit_4_cursorPositionChanged(int arg1, int arg2);
+    void on_lineEdit_returnPressed();
 
 private:
     Ui::MainWindow *ui;

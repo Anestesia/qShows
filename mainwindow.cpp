@@ -3,24 +3,15 @@
 #include "ui_secondwindow.h"
 #include "QString"
 #include "QUrl"
-#include "QDebug"
 #include "QLabel"
 #include "qxtjson.h"
 #include "title.h"
 #include "serie.h"
 #include "QNetworkProxy"
-#include "QtAlgorithms"
-#include "QGraphicsScene"
 #include "QMessageBox"
-#include "QDateTime"
 #include "QFileDialog"
-#include "QCryptographicHash"
 #include "md5.h"
-#include <QtSql>
-#include <sys/stat.h>
-#include <QTimer>
 #include <QObject>
-#include "qtimer.h"
 #include "secondwindow.h"
 #include <QFile>
 #include "QSettings"
@@ -30,52 +21,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui(new Ui::MainWindow)
 {
-
     ui->setupUi(this);
     firstPic = true;
     isLogged=false;
     firstPush = true;
-
     ui->centralWidget->setWindowTitle(QString::fromUtf8("Serial detective"));
     ui->statusBar->showMessage(APP_REVISION);
-
-//    QFile file("my_db.sqlite");
-
-//    if (file.exists())
-//    {
-
-//    isOpened = dbase.open();
-//    }
-//    else
-//   {
-        dbase = QSqlDatabase::addDatabase("QSQLITE");
-        dbase.setDatabaseName("my_db.sqlite");
-        dbase.open();
-//    }
-
-
-//    if (!isOpened) {
-//            qDebug() << "Что-то пошло не так!";
-//    }
-
-
-    QSqlQuery a_query;
-    // DDL query
-    QString str = "CREATE TABLE my_table ("
-            "Title VARCHAR(255) PRIMARY KEY NOT NULL, "
-            "id integer, "
-            "Year integer, "
-            "Ended VARCHAR(255)"
-            ")";
-    bool b = a_query.exec(str);
-    if (!b)
-    {
-        qDebug() << "Вроде не удается создать таблицу, провертье карманы!" << a_query.lastError();
-    }
-
-
-
     ui->statusBar->show();
+    doLogin();
 }
 
 
@@ -85,43 +38,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
- int zapusk = 0;
+
 void MainWindow::on_pushButton_clicked()
 {
-    if (zapusk == 0)
-    {
-        zapusk = 1;
-    f2 = new secondwindow(this);
-    f2->show();
-    }
-    else
-    {
-    f2->show();
-    }
+    secondwindow *Settings = new secondwindow(this);
+    Settings->setModal(true);
+    Settings->show();
 }
 
 void MainWindow::doLogin(QString Login, QString Pass)
 {
-    url.setUrl("http://api.myshows.ru/profile/login?login="+Login+"&password="+MD5(Pass));
-        request.setUrl(url);
-        reply = networkManager.get(request);
-        if (firstPush)
-        {
-            connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onLoginResult(QNetworkReply*)));
-        }
-        firstPush=false;
-qDebug()<<login;
-
-
-}
-
-void MainWindow::doLogin()
-{
-    QSettings *s = new QSettings ("setting.ini",QSettings::IniFormat,0);
-    s->beginGroup("Settings");
-    login = s->value("Login","0").toString();
-    hash = MD5(s->value("Pass","0").toString());
-    s->endGroup();
+    login = Login;
+    hash = MD5(Pass);
     url.setUrl("http://api.myshows.ru/profile/login?login="+login+"&password="+hash);
     request.setUrl(url);
     reply = networkManager.get(request);
@@ -132,27 +60,37 @@ void MainWindow::doLogin()
     firstPush=false;
 }
 
+void MainWindow::doLogin()
+{
+    QSettings *s = new QSettings ("setting.ini",QSettings::IniFormat,0);
+    s->beginGroup("Settings");
+    login = s->value("Login","0").toString();
+    QString pass = s->value("Pass","0").toString();
+    s->endGroup();
+    doLogin(login,pass);
+}
+
 void MainWindow::onLoginResult(QNetworkReply *reply)
 {
     int v = (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute)).toInt();
     if (v==200)
     {
         isLogged = true;
-        QMessageBox mBox;
-        mBox.setText("Success!");
-        mBox.exec();
     }
     disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onLoginResult(QNetworkReply*)));
 }
 
 void MainWindow::GetSerialsByName()
 {
-//    if (firstPush)
-//    {
+    //if (firstPush)
+    //{
         connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResult(QNetworkReply*)));
-//    }
-//    firstPush=false;
-    url.setUrl("http://api.myshows.ru/shows/search/?q="+ui->lineEdit->text());
+    //}
+    firstPush=false;
+    qDebug()<<ui->lineEdit->text();
+    QString uri = "http://api.myshows.ru/shows/search/?q=";
+    uri.append(ui->lineEdit->text());
+    url.setUrl(uri);
     request.setUrl(url);
     reply = networkManager.get(request);
     ui->tableWidget->clear();
@@ -162,55 +100,13 @@ void MainWindow::GetSerialsByName()
     ui->tableWidget->setHorizontalHeaderItem(1,new QTableWidgetItem(QString::fromUtf8("Id")));
     ui->tableWidget->setHorizontalHeaderItem(2,new QTableWidgetItem(QString::fromUtf8("Year")));
     ui->tableWidget->setHorizontalHeaderItem(3,new QTableWidgetItem(QString::fromUtf8("Ended")));
-    qDebug() << "Отправлен завпрос в интернет";
 }
 
 void MainWindow::renewTable()
 {
-    /*if (titles.size()>=1)
-    {
-        titles.remove(0,titles.size());
-    }*/
     ui->tableWidget->setRowCount(0);
     for (int i=0;i<titles.size();i++)
     {
-///////////////////////////////////////////////////////
-        ///////////////////////////////////////////
-        ////////////////////////////////////////
-
-
-            QSqlQuery a_query;
-                    QString str_insert = "INSERT INTO my_table(Title, id, Year, Ended) "
-                            "VALUES ('%1', %2, %3, '%4');";
-                    QString str = str_insert.arg(titles[i].uktitle)
-                            .arg(titles[i].id)
-                            .arg(titles[i].year)
-                            .arg(titles[i].ended);
-                    bool b = a_query.exec(str);
-//                    if (!b) {
-//                        qDebug() << "Кажется данные не вставляются, проверьте дверь, может она закрыта?";
-//                    }
-
-}
-
-
-    QSqlQuery query("SELECT Title FROM my_table where title LIKE '%" +ui->lineEdit->text()+ "%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-    int i=0;
-    //qDebug() << "qery error " << query.lastError();
-    while (query.next()) {
-
-        ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
-        ui->tableWidget->setItem(i,0,new QTableWidgetItem(query.value(0).toString()));
-
-
-
-             i++;
-
-    }
-
-    QSqlQuery query2("SELECT id FROM my_table where title LIKE '%" +ui->lineEdit->text()+ "%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-     i=0;
-    while (query2.next()) {
         QLabel *label = new QLabel(this);
         label->setOpenExternalLinks(true);
         label->setTextFormat(Qt::RichText);
@@ -219,51 +115,24 @@ void MainWindow::renewTable()
         label->setProperty("column",1);
 
         QString text(QString::fromUtf8("<a href=\"http://myshows.ru/view/"));
-        text.append(QString::number(query2.value(0).toInt()));
+        text.append(QString::number(titles[i].id));
         text.append(QString::fromUtf8("/\">myshows.ru<\\a>"));
 
         label->setText(text);
 
-
+        ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
+        ui->tableWidget->setItem(i,0,new QTableWidgetItem(titles[i].uktitle));
         ui->tableWidget->setCellWidget(i,1,label);
-
-
-             i++;
-
+        ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(titles[i].year)));
+        ui->tableWidget->setItem(i,3,new QTableWidgetItem(titles[i].ended));
     }
-
-    QSqlQuery query3("SELECT Year FROM my_table where title LIKE '%" +ui->lineEdit->text()+ "%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-     i=0;
-    while (query3.next()) {
-
-          ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(query3.value(0).toInt())));
-             i++;
-
-    }
-
-    QSqlQuery query4("SELECT Ended FROM my_table where title LIKE '%" +ui->lineEdit->text()+ "%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-     i=0;
-    while (query4.next()) {
-
-
-        ui->tableWidget->setItem(i,3,new QTableWidgetItem(query4.value(0).toString()));
-             i++;
-
-    }
-////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
-
 }
 
 void MainWindow::onResult(QNetworkReply* reply)
 {
     const QByteArray rawdata = reply->readAll();
-
+    qDebug()<<rawdata;
     QxtJSON parser = QxtJSON();
-
     QVariantMap map = parser.parse(QString::fromUtf8(rawdata.data())).toMap();
     QMapIterator<QString, QVariant> it(map);
     while (it.hasNext())
@@ -296,9 +165,7 @@ void MainWindow::onFileResult(QNetworkReply* reply)
         titles.remove(0,titles.size());
     }
     const QByteArray rawdata = reply->readAll();
-
     QxtJSON parser = QxtJSON();
-
     QVariantMap map = parser.parse(QString::fromUtf8(rawdata.data())).toMap();
     QVariant match = map["match"];
     if (match.toInt()==85 || match.toInt()==100)
@@ -323,13 +190,11 @@ void MainWindow::onFileResult(QNetworkReply* reply)
 
 void MainWindow::on_tableWidget_cellClicked(int row, int column)
 {
-
     if (titles[row].image!="")
     {
         QUrl imageUrl(titles[row].image);
         m_pImgCtrl = new FileDownloader(imageUrl, this);
     }
-    //if (firstPic)
     {
         connect(m_pImgCtrl,SIGNAL(downloaded()),SLOT(loadImage()));
     }
@@ -348,8 +213,8 @@ void MainWindow::loadImage()
 void MainWindow::GetSerialsByFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                     "",
-                                                     tr("Files (*.*)"));
+                                                    "",
+                                                    tr("Files (*.*)"));
     if (firstPush)
     {
         connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFileResult(QNetworkReply*)));
@@ -377,15 +242,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
-    doLogin();
-    if (isLogged)
-    {
-        url.setUrl("http://api.myshows.ru/profile/episodes/unwatched/");
-        connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(GetSeries(QNetworkReply*)));
-        request.setUrl(url);
-        reply = networkManager.get(request);
-    }
-
+    qDebug()<<login;
     ui->tableWidget_2->clear();
     ui->tableWidget_2->setRowCount(0);
     ui->tableWidget_2->setColumnCount(4);
@@ -393,12 +250,24 @@ void MainWindow::on_pushButton_4_clicked()
     ui->tableWidget_2->setHorizontalHeaderItem(1,new QTableWidgetItem(QString::fromUtf8("Serial")));
     ui->tableWidget_2->setHorizontalHeaderItem(2,new QTableWidgetItem(QString::fromUtf8("Air Date")));
     ui->tableWidget_2->setHorizontalHeaderItem(3,new QTableWidgetItem(QString::fromUtf8("Season")));
+    if (isLogged)
+    {
+        url.setUrl("http://api.myshows.ru/profile/episodes/unwatched/");
+        connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(GetSeries(QNetworkReply*)));
+        request.setUrl(url);
+        reply = networkManager.get(request);
+    }
+    else
+    {
+        doLogin();
+    }
+
 }
 
 void MainWindow::GetSeries(QNetworkReply* reply)
 {
     const QByteArray rawdata = reply->readAll();
-
+    qDebug()<<rawdata;
     QxtJSON parser = QxtJSON();
 
     QVariantMap map = parser.parse(QString::fromUtf8(rawdata.data())).toMap();
@@ -434,13 +303,10 @@ void MainWindow::renewEpTable()
         label->setTextInteractionFlags(Qt::TextBrowserInteraction);
         label->setProperty("row",i);
         label->setProperty("column",1);
-
         QString text(QString::fromUtf8("<a href=\"http://myshows.ru/view/"));
         text.append(QString::number(series[i].showId));
         text.append(QString::fromUtf8("/\">myshows.ru<\\a>"));
-
         label->setText(text);
-
         ui->tableWidget_2->setRowCount(ui->tableWidget_2->rowCount()+1);
         ui->tableWidget_2->setItem(i,0,new QTableWidgetItem(series[i].title));
         ui->tableWidget_2->setCellWidget(i,1,label);
@@ -450,95 +316,12 @@ void MainWindow::renewEpTable()
 }
 
 
-void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+
+void MainWindow::on_lineEdit_lostFocus()
 {
-
-        ui->tableWidget->clear();
-        ui->tableWidget->setRowCount(0);
-        ui->tableWidget->setColumnCount(4);
-        ui->tableWidget->setHorizontalHeaderItem(0,new QTableWidgetItem(QString::fromUtf8("Title")));
-        ui->tableWidget->setHorizontalHeaderItem(1,new QTableWidgetItem(QString::fromUtf8("Id")));
-        ui->tableWidget->setHorizontalHeaderItem(2,new QTableWidgetItem(QString::fromUtf8("Year")));
-        ui->tableWidget->setHorizontalHeaderItem(3,new QTableWidgetItem(QString::fromUtf8("Ended")));
-
-    QString zapr="SELECT Title FROM my_table where title LIKE '%" + ui->lineEdit->text() + "%' or year LIKE '%" + ui->lineEdit->text() + "%'";
-    qDebug() << zapr;
-    QSqlQuery query(zapr);
-    int i=0;
-    while (query.next())
-    {
-
-        ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
-        ui->tableWidget->setItem(i,0,new QTableWidgetItem(query.value(0).toString()));
-
-             i++;
-    }
-
-    QSqlQuery query2("SELECT id FROM my_table where title LIKE '%" +ui->lineEdit->text()+"%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-     i=0;
-    while (query2.next()) {
-        QLabel *label = new QLabel(this);
-        label->setOpenExternalLinks(true);
-        label->setTextFormat(Qt::RichText);
-        label->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        label->setProperty("row",i);
-        label->setProperty("column",1);
-
-        QString text(QString::fromUtf8("<a href=\"http://myshows.ru/view/"));
-        text.append(QString::number(query2.value(0).toInt()));
-        text.append(QString::fromUtf8("/\">myshows.ru<\\a>"));
-
-        label->setText(text);
-
-
-        ui->tableWidget->setCellWidget(i,1,label);
-
-
-             i++;
-
-    }
-
-    QSqlQuery query3("SELECT Year FROM my_table where title LIKE '%" + ui->lineEdit->text() + "%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-     i=0;
-    while (query3.next()) {
-
-          ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(query3.value(0).toInt())));
-
-             i++;
-
-    }
-
-    QSqlQuery query4("SELECT Ended FROM my_table where title LIKE '%" + ui->lineEdit->text() + "%' or year LIKE '%" + ui->lineEdit->text() + "%'");
-     i=0;
-    while (query4.next()) {
-
-
-        ui->tableWidget->setItem(i,3,new QTableWidgetItem(query4.value(0).toString()));
-             i++;
-
-    }
-
-    QTimer *timer = new QTimer(this);
-    if (timer->isActive())
-    {
-        timer->stop();
-    }
-    else
-    QTimer::singleShot(5000, this , SLOT(GetSerialsByName()));
-
 }
 
-
-
-/*void MainWindow::on_pushButton_3_clicked()
+void MainWindow::on_lineEdit_returnPressed()
 {
-
-
-}*/
-
-void MainWindow::on_pushButton_5_clicked()
-{
-        doLogin(login,hash);
+    GetSerialsByName();
 }
-
-
