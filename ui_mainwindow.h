@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue 8. Jan 03:14:29 2013
-**      by: Qt User Interface Compiler version 4.8.0
+** Created: Mon Apr 8 20:25:51 2013
+**      by: Qt User Interface Compiler version 4.8.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -36,15 +36,11 @@ public:
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
-    QPushButton *pushButton;
     QLineEdit *lineEdit;
+    QPushButton *pushButton;
     QPushButton *pushButton_2;
     QPushButton *pushButton_4;
-    QLineEdit *lineEdit_2;
-    QLineEdit *lineEdit_3;
-    QPushButton *pushButton_3;
     QGraphicsView *graphicsView;
-    QTableWidget *tableWidget_3;
     QTableWidget *tableWidget_2;
     QTableWidget *tableWidget;
     QMenuBar *menuBar;
@@ -68,15 +64,15 @@ public:
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(6);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        pushButton = new QPushButton(centralWidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-
-        verticalLayout->addWidget(pushButton);
-
         lineEdit = new QLineEdit(centralWidget);
         lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
 
         verticalLayout->addWidget(lineEdit);
+
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+
+        verticalLayout->addWidget(pushButton);
 
         pushButton_2 = new QPushButton(centralWidget);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
@@ -88,30 +84,10 @@ public:
 
         verticalLayout->addWidget(pushButton_4);
 
-        lineEdit_2 = new QLineEdit(centralWidget);
-        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
-
-        verticalLayout->addWidget(lineEdit_2);
-
-        lineEdit_3 = new QLineEdit(centralWidget);
-        lineEdit_3->setObjectName(QString::fromUtf8("lineEdit_3"));
-
-        verticalLayout->addWidget(lineEdit_3);
-
-        pushButton_3 = new QPushButton(centralWidget);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-
-        verticalLayout->addWidget(pushButton_3);
-
         graphicsView = new QGraphicsView(centralWidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
 
         verticalLayout->addWidget(graphicsView);
-
-        tableWidget_3 = new QTableWidget(centralWidget);
-        tableWidget_3->setObjectName(QString::fromUtf8("tableWidget_3"));
-
-        verticalLayout->addWidget(tableWidget_3);
 
         tableWidget_2 = new QTableWidget(centralWidget);
         tableWidget_2->setObjectName(QString::fromUtf8("tableWidget_2"));
@@ -149,10 +125,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Serial Detective", 0, QApplication::UnicodeUTF8));
-        pushButton->setText(QApplication::translate("MainWindow", "Search", 0, QApplication::UnicodeUTF8));
+        pushButton->setText(QApplication::translate("MainWindow", "Settings", 0, QApplication::UnicodeUTF8));
         pushButton_2->setText(QApplication::translate("MainWindow", "Recognise by file", 0, QApplication::UnicodeUTF8));
-        pushButton_4->setText(QApplication::translate("MainWindow", "Get new series", 0, QApplication::UnicodeUTF8));
-        pushButton_3->setText(QApplication::translate("MainWindow", "Login", 0, QApplication::UnicodeUTF8));
+        pushButton_4->setText(QApplication::translate("MainWindow", "Get unwatched episodes", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

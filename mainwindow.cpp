@@ -531,7 +531,6 @@ void MainWindow::on_lineEdit_textEdited(const QString &arg1)
 
 void MainWindow::on_pushButton_5_clicked()
 {
-
         doLogin(login,hash);
 }
 

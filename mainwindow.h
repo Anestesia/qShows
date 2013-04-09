@@ -3,9 +3,6 @@
 
 #include <QMainWindow>
 #include "QtNetwork/QNetworkReply"
-#include "QScriptEngine"
-#include "QScriptValue"
-#include "QScriptValueIterator"
 #include <title.h>
 #include "serie.h"
 #include "filedownloader.h"
@@ -19,7 +16,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public slots:
     void onResult(QNetworkReply*);
     void onFileResult(QNetworkReply*);

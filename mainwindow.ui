@@ -20,21 +20,14 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
+         <widget class="QLineEdit" name="lineEdit"/>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButton">
           <property name="text">
-           <string>Proxy</string>
+           <string>Settings</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_5">
-          <property name="text">
-           <string>Set</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit"/>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton_2">
@@ -46,7 +39,7 @@
         <item>
          <widget class="QPushButton" name="pushButton_4">
           <property name="text">
-           <string>Get new series</string>
+           <string>Get unwatched episodes</string>
           </property>
          </widget>
         </item>

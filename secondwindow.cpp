@@ -34,9 +34,6 @@ void secondwindow::on_checkBox_clicked(bool checked)
         set_proxy->setValue("User",ui->lineEdit_5->text());
         set_proxy->setValue("Password",ui->lineEdit_6->text());
         set_proxy->endGroup();
-
-
-
     }
     else
     {
@@ -66,7 +63,8 @@ void secondwindow::on_pushButton_clicked()
 
 void secondwindow::on_pushButton_2_clicked()
 
-{    Login = ui->lineEdit->text();
+{
+    Login = ui->lineEdit->text();
     Pass = ui->lineEdit_2->text();
 
     QSettings *s = new QSettings("setting.ini",QSettings::IniFormat,0);
@@ -77,15 +75,5 @@ void secondwindow::on_pushButton_2_clicked()
 
       // ui->lineEdit->setText(Login);
        //ui->lineEdit_2->setText(Pass);
-
-
-
-
-
-
-
-
-
-
 }
 
