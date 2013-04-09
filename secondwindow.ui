@@ -14,6 +14,64 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="10" column="0">
+    <widget class="QLineEdit" name="lineEdit_3"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLineEdit" name="lineEdit_5">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Apply</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Proxy IP</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLineEdit" name="lineEdit_4">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Proxy Login</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLineEdit" name="lineEdit_6">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLineEdit" name="lineEdit_2"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Proxy Port</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -40,7 +98,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="4" column="0">
     <widget class="QCheckBox" name="checkBox">
      <property name="text">
       <string>Use proxy</string>
@@ -48,71 +106,6 @@
     </widget>
    </item>
    <item row="11" column="0">
-    <widget class="QLineEdit" name="lineEdit_3"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEdit"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLineEdit" name="lineEdit_2"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="text">
-      <string>Login</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Proxy Port</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLineEdit" name="lineEdit_4">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Proxy Login</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="0">
-    <widget class="QLineEdit" name="lineEdit_6">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLineEdit" name="lineEdit_5">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="0">
-    <widget class="QPushButton" name="pushButton">
-     <property name="text">
-      <string>Apply</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Proxy IP</string>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Proxy Password</string>

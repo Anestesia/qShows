@@ -102,15 +102,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::doLogin(QString Login, QString Pass)
 {
-
-    QSettings *s = new QSettings ("setting.ini",QSettings::IniFormat,0);
-    s->beginGroup("Settings");
-    login = s->value("Login","0").toString();
-    hash = MD5(s->value("Pass","0").toString());
-    s->endGroup();
-
-
-        url.setUrl("http://api.myshows.ru/profile/login?login="+login+"&password="+hash);
+    url.setUrl("http://api.myshows.ru/profile/login?login="+Login+"&password="+MD5(Pass));
         request.setUrl(url);
         reply = networkManager.get(request);
         if (firstPush)
@@ -118,12 +110,26 @@ void MainWindow::doLogin(QString Login, QString Pass)
             connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onLoginResult(QNetworkReply*)));
         }
         firstPush=false;
-
-        //qDebug()<<secondwindow::ui->lineEdit_5->text();
-
 qDebug()<<login;
 
 
+}
+
+void MainWindow::doLogin()
+{
+    QSettings *s = new QSettings ("setting.ini",QSettings::IniFormat,0);
+    s->beginGroup("Settings");
+    login = s->value("Login","0").toString();
+    hash = MD5(s->value("Pass","0").toString());
+    s->endGroup();
+    url.setUrl("http://api.myshows.ru/profile/login?login="+login+"&password="+hash);
+    request.setUrl(url);
+    reply = networkManager.get(request);
+    if (firstPush)
+    {
+        connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onLoginResult(QNetworkReply*)));
+    }
+    firstPush=false;
 }
 
 void MainWindow::onLoginResult(QNetworkReply *reply)
@@ -371,6 +377,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
+    doLogin();
     if (isLogged)
     {
         url.setUrl("http://api.myshows.ru/profile/episodes/unwatched/");

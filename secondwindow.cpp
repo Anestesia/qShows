@@ -8,6 +8,19 @@ secondwindow::secondwindow(QWidget *parent) :
     ui(new Ui::secondwindow)
 {
     ui->setupUi(this);
+    QSettings *set_proxy = new QSettings("Setproxy.ini",QSettings::IniFormat,0);
+     set_proxy->beginGroup("Setproxy");
+  ui->lineEdit_4->setText(set_proxy->value("HostName","0").toString());
+  ui->lineEdit_3->setText(set_proxy->value("Port","0").toString());
+  ui->lineEdit_5->setText(set_proxy->value("User","0").toString());
+  ui->lineEdit_6->setText(set_proxy->value("Password","0").toString());
+  set_proxy->endGroup();
+
+  QSettings *set = new QSettings ("setting.ini",QSettings::IniFormat,0);
+  set->beginGroup("Settings");
+  ui->lineEdit->setText( set->value("Login","0").toString());
+  ui->lineEdit_2->setText(set->value("Pass","0").toString());
+  set->endGroup();
 }
 
 secondwindow::~secondwindow()
@@ -18,8 +31,8 @@ secondwindow::~secondwindow()
 void secondwindow::on_checkBox_clicked(bool checked)
 {
     if (checked)
-    { QNetworkProxy proxy;
-
+    {
+        QNetworkProxy proxy;
         proxy.setType(QNetworkProxy::HttpProxy);
         proxy.setHostName(ui->lineEdit_4->text());
         proxy.setPort(ui->lineEdit_3->text().toInt());

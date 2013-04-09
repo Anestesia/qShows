@@ -50,6 +50,7 @@ private:
     void GetSerialsByFile();
     bool firstPush;
     void doLogin(QString login, QString pass);
+    void doLogin();
 private slots:
     void on_pushButton_clicked();
 
